@@ -2,15 +2,14 @@
 class Main : public Scene
 {
 private:
-	ObImage* bg;
+	/*ObImage* bg;
 	ObImage* bg_1;
 	ObImage* bg_2;
 	ObImage* bg_3;
-	ObImage* bg_4;
+	ObImage* bg_4;*/
+	class Map* map;
 	class Player* player;
-	//ObImage* player[2];
 
-	//int playerDir;
 
 public:
 	Main();
