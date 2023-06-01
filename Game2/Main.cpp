@@ -68,6 +68,12 @@ void Main::Release()
 
 void Main::Update()
 {
+	{
+		ImGui::Text("KEYS");
+		ImGui::Text("[ VK_LEFT  ] LEFT  MOVE \n");
+		ImGui::Text("[ VK_RIGHT ] RIGHT MOVE \n");
+	}
+
 	if (INPUT->KeyPress(VK_LEFT))
 	{
 		//초당 한장 지나가는속도 -> 초당 1픽셀 속도 * 300

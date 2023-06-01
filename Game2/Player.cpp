@@ -68,7 +68,7 @@ void Player::Update()
 
 void Player::Render()
 {
-	ObRect::Render();
+	//ObRect::Render();
 
 	if (playerDir == 0)
 		player_skin[0]->Render();
