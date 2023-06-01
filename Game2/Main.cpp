@@ -1,5 +1,7 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
+#include "Player.h"
 #include "Main.h"
+
 
 Main::Main()
 {
@@ -9,17 +11,7 @@ Main::Main()
 	bg_3 = new ObImage(L"bg_ground_weeds.png");
 	bg_4 = new ObImage(L"bg_ground_trees.png");
 
-	player[0] = new ObImage(L"player_left.png");
-	player[1] = new ObImage(L"player_right.png");
-	for (auto& player : this->player)
-	{
-		player->scale.x = player->imageSize.x * 2.0f / 4.0f;
-		player->scale.y = player->imageSize.y * 2.0f;
-		player->uv.z = 1.0f / 4.0f;
-		player->SetWorldPosY(-(app.GetHeight() - 450.f) / 2.0f);
-	}
-	playerDir = 1; // ±âº» ¹æÇâÀº ¿À¸¥ÂÊ
-
+	player = new Player();
 
 	bg->scale.x = app.GetWidth();
 	bg->scale.y = app.GetHeight();
@@ -76,13 +68,9 @@ void Main::Release()
 
 void Main::Update()
 {
-	static float tickCount = 0.0f;
-
 	if (INPUT->KeyPress(VK_LEFT))
 	{
-		playerDir = 0;
-
-		//ÃÊ´ç ÇÑÀå Áö³ª°¡´Â¼Óµµ -> ÃÊ´ç 1ÇÈ¼¿ ¼Óµµ * 300
+		//ì´ˆë‹¹ í•œì¥ ì§€ë‚˜ê°€ëŠ”ì†ë„ -> ì´ˆë‹¹ 1í”½ì…€ ì†ë„ * 300
 
 		bg->uv.x -= DELTA * 10.0f / bg->imageSize.x;
 		bg->uv.z -= DELTA * 10.0f / bg->imageSize.x;
@@ -99,21 +87,11 @@ void Main::Update()
 		bg_4->uv.x -= DELTA * 100.0f / bg_4->imageSize.x;
 		bg_4->uv.z -= DELTA * 100.0f / bg_4->imageSize.x;
 
-		if (TIMER->GetTick(tickCount, 0.1f))
-		{
-			for (auto& player : this->player)
-			{
-				player->uv.z -= 1.0f / 4.0f;
-				player->uv.x -= 1.0f / 4.0f;
-			}
-		}
 	}
 
 	if (INPUT->KeyPress(VK_RIGHT))
 	{
-		playerDir = 1;
-		
-		//ÃÊ´ç ÇÑÀå Áö³ª°¡´Â¼Óµµ -> ÃÊ´ç 1ÇÈ¼¿ ¼Óµµ * 300
+		//ì´ˆë‹¹ í•œì¥ ì§€ë‚˜ê°€ëŠ”ì†ë„ -> ì´ˆë‹¹ 1í”½ì…€ ì†ë„ * 300
 
 		bg->uv.x += DELTA * 10.0f / bg->imageSize.x;
 		bg->uv.z += DELTA * 10.0f / bg->imageSize.x;
@@ -129,15 +107,6 @@ void Main::Update()
 
 		bg_4->uv.x += DELTA * 100.0f / bg_4->imageSize.x;
 		bg_4->uv.z += DELTA * 100.0f / bg_4->imageSize.x;
-
-		if (TIMER->GetTick(tickCount, 0.1f))
-		{
-			for (auto& player : this->player)
-			{
-				player->uv.z += 1.0f / 4.0f;
-				player->uv.x += 1.0f / 4.0f;
-			}
-		}
 	}
 		
 	bg->Update();
@@ -145,9 +114,7 @@ void Main::Update()
 	bg_2->Update();
 	bg_3->Update();
 	bg_4->Update();
-	for (auto& player : this->player)
-		player->Update();
-
+	player->Update();
 }
 
 void Main::LateUpdate()
@@ -160,10 +127,7 @@ void Main::Render()
 	bg_4->Render();
 	bg_3->Render();
 	bg_2->Render();
-	if (playerDir == 0)
-		player[0]->Render();
-	else if (playerDir == 1)
-		player[1]->Render();
+	player->Render();
 	bg_1->Render();
 }
 
