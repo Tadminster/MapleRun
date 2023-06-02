@@ -1,42 +1,134 @@
 ﻿#include "stdafx.h"
 #include "Player.h"
+#include "Map.h"
+
 
 Player::Player()
 {
-	this->scale.x = 60.0f;
-	this->scale.y = 120.0f;
-	this->SetWorldPos(Vector2(0.0f, -95.0f));
-	this->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-	this->isFilled = false;
-	this->hasAxis = false;
+	collider = new ObRect();
+	skin_idle[0] = new ObImage(L"player_idle_left.png");
+	skin_idle[1] = new ObImage(L"player_idle_right.png");
+	skin_run[0] = new ObImage(L"player_run_left.png");
+	skin_run[1] = new ObImage(L"player_run_right.png");
+	skin_jump[0] = new ObImage(L"player_jump_left.png");
+	skin_jump[1] = new ObImage(L"player_jump_right.png");
 
-	playerDir = 1;
-	
-	player_skin[0] = new ObImage(L"player_left.png");
-	player_skin[1] = new ObImage(L"player_right.png");
+	// PLAYER COLLISION
+	collider->pivot = OFFSET_B;
+	collider->scale.x = 30.0f;
+	collider->scale.y = 60.0f;
+	collider->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+	collider->isFilled = false;
+	collider->hasAxis = false;
 
-	for (auto& player : this->player_skin)
+	this->Init();
+
+	// SKIN
 	{
-		player->SetParentRT(*this);
-		player->scale.x = player->imageSize.x * 2.0f / 4.0f;
-		player->scale.y = player->imageSize.y * 2.0f;
-		player->uv.z = 1.0f / 4.0f;
+		// IDLE
+		for (auto& idle : skin_idle)
+		{
+			idle->SetParentRT(*this->collider);
+			idle->scale.x = idle->imageSize.x;
+			idle->scale.y = idle->imageSize.y;
+			idle->SetLocalPosY(34);
+		}
+		//skin_idle[0]->SetLocalPosX(-10);
+		//skin_idle[1]->SetLocalPosX(10);
+		
+		// JUMP
+		for (auto& jump : skin_jump)
+		{
+			jump->SetParentRT(*this->collider);
+			jump->scale.x = jump->imageSize.x;
+			jump->scale.y = jump->imageSize.y;
+			jump->SetLocalPosY(34);
+		}
+
+		// RUN
+		for (auto& run : skin_run)
+		{
+			run->SetParentRT(*this->collider);
+			run->scale.x = run->imageSize.x / 4.0f;
+			run->scale.y = run->imageSize.y;
+			run->uv.z = 1.0f / 4.0f;
+			run->SetLocalPosY(34);
+		}
+		skin_run[0]->SetLocalPosX(-10);
+		skin_run[1]->SetLocalPosX(10);
 	}
-	player_skin[0]->SetLocalPosX(-10);
-	player_skin[1]->SetLocalPosX(10);
 }
 
 Player::~Player()
 {
-	for (auto& playerSkin : this->player_skin)
-		delete playerSkin;
-	TEXTURE->DeleteTexture(L"player_left.png");
-	TEXTURE->DeleteTexture(L"player_right.png");
+	for (auto& idle : skin_idle)
+		delete idle;
+	TEXTURE->DeleteTexture(L"player_idel_left.png");
+	TEXTURE->DeleteTexture(L"player_idel_right.png");
+
+	for (auto& jump : skin_jump)
+		delete jump;
+	TEXTURE->DeleteTexture(L"player_idel_left.png");
+	TEXTURE->DeleteTexture(L"player_idel_right.png");
+
+	for (auto& run : skin_run)
+		delete run;
+	TEXTURE->DeleteTexture(L"player_run_left.png");
+	TEXTURE->DeleteTexture(L"player_run_right.png");
+
+	delete collider;
 }
 
-void Player::Update()
+bool Player::collision(Map* map)
 {
-	ObRect::Update();
+	for (auto& obj : map->getObjects())
+	{
+		if (this->collider->Intersect(obj))
+		{
+			obj->color = Color(1, 0, 0, 1);
+			return true;
+		}
+
+		if (obj->color.x == 1)
+			obj->color = Color(1, 1, 1, 1);
+	}
+	return false;
+}
+
+void Player::Init()
+{
+	collider->SetWorldPos(Vector2(100, -155));
+	state = PlayerState::IDLE;
+	dir = PlayerDir::R;
+}
+
+void Player::Update(Map* map)
+{
+	this->Control();
+	this->collider->Update();
+
+	if (collider->GetWorldPos().y <= -500) this->Init();
+
+	if (state == PlayerState::JUMP)
+	{
+		this->gravity += 400.f * DELTA;
+		this->collider->MoveWorldPos(DOWN * gravity * DELTA);
+		if (this->collider->GetWorldPos().y < -155 && this->collision(map))
+		{
+			this->collider->SetWorldPosY(-155);
+			this->state = PlayerState::IDLE;
+		}
+	}
+	else if (state == PlayerState::IDLE || state == PlayerState::RUN)
+	{
+		if (!this->collision(map))
+		{
+			this->gravity += 400.f * DELTA;
+			this->collider->MoveWorldPos(DOWN * gravity * DELTA);
+		}
+		else if (this->collision(map) && collider->GetWorldPos().y > -155)
+			gravity = 0;
+	}
 
 
 	static float tickCount = 0.0f;
@@ -44,8 +136,8 @@ void Player::Update()
 	{
 		if (INPUT->KeyPress(VK_LEFT))
 		{
-			this->playerDir = 0;
-			for (auto& playerSkin : this->player_skin)
+			
+			for (auto& playerSkin : this->skin_run)
 			{
 				playerSkin->uv.z -= 1.0f / 4.0f;
 				playerSkin->uv.x -= 1.0f / 4.0f;
@@ -53,31 +145,94 @@ void Player::Update()
 		}
 		if (INPUT->KeyPress(VK_RIGHT))
 		{
-			this->playerDir = 1;
-			for (auto& playerSkin : this->player_skin)
+			for (auto& playerSkin : this->skin_run)
 			{
 				playerSkin->uv.z += 1.0f / 4.0f;
 				playerSkin->uv.x += 1.0f / 4.0f;
 			}
 		}
+
 	}
 
-	for (auto& player : this->player_skin)
-		player->Update();
+	for (auto& idle : this->skin_idle)
+		idle->Update();
+	for (auto& jump : this->skin_jump)
+		jump->Update();
+	for (auto& run : this->skin_run)
+		run->Update();
 }
 
 void Player::Render()
 {
-	//ObRect::Render();
+	this->collider->Render();
 
-	if (playerDir == 0)
-		player_skin[0]->Render();
-	else if (playerDir == 1)
-		player_skin[1]->Render();
+	if (state == PlayerState::IDLE && dir == PlayerDir::L)
+		skin_idle[0]->Render();
+	else if (state == PlayerState::IDLE && dir == PlayerDir::R)
+		skin_idle[1]->Render();
+
+	else if (state == PlayerState::JUMP && dir == PlayerDir::L)
+		skin_jump[0]->Render();
+	else if (state == PlayerState::JUMP && dir == PlayerDir::R)
+		skin_jump[1]->Render();
+
+	else if (state == PlayerState::RUN && dir == PlayerDir::L)
+		skin_run[0]->Render();
+	else if (state == PlayerState::RUN && dir == PlayerDir::R)
+		skin_run[1]->Render();
+
+
 }
 
 void Player::Control()
 {
+	// When IDEL, RUN
+	if (state == PlayerState::IDLE || state == PlayerState::RUN)
+		// can JUMP
+		if (INPUT->KeyDown(VK_UP))
+		{
+			state = PlayerState::JUMP;
+			gravity = -250.0f;
+		}
+	// When DEBUG, can DOWN
+	if (INPUT->KeyDown(VK_DOWN))
+	{
+		this->collider->MoveWorldPos(DOWN * 500.0f * DELTA);
+	}
 
-	
+	// When NOT JUMP, can change state
+	// Direction always changes
+	if (INPUT->KeyDown(VK_LEFT))
+	{
+		dir = PlayerDir::L;
+
+		if (state != PlayerState::JUMP)
+			state = PlayerState::RUN;
+	}
+	if (INPUT->KeyDown(VK_RIGHT))
+	{
+		dir = PlayerDir::R;
+		
+		if (state != PlayerState::JUMP)
+			state = PlayerState::RUN;
+	}
+
+	// KeyUP while Running, change state to IDLE
+	if (state == PlayerState::RUN && (INPUT->KeyUp(VK_LEFT) || INPUT->KeyUp(VK_RIGHT)))
+	{
+			state = PlayerState::IDLE;
+	}
+
+	// can always Move
+	if (INPUT->KeyPress(VK_LEFT))
+	{
+		this->collider->MoveWorldPos(LEFT * 500.0f * DELTA);
+	}
+	if (INPUT->KeyPress(VK_RIGHT))
+	{
+		this->collider->MoveWorldPos(RIGHT * 500.0f * DELTA);
+	}
+
+
+
 }

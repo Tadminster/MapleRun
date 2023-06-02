@@ -7,9 +7,10 @@ private:
 	ObImage* bg_2;
 	ObImage* bg_3;
 	ObImage* bg_4;*/
-	class Map* map;
-	class Player* player;
+	class Map*		map;
+	class Player*	player;
 
+	bool			debug = true;
 
 public:
 	Main();

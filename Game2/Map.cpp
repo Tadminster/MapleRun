@@ -3,6 +3,8 @@
 
 Map::Map()
 {
+
+
 	bg = new ObImage(L"bg_background.png");
 	bg_1 = new ObImage(L"bg_ground_flower.png");
 	bg_2 = new ObImage(L"bg_ground_extend.png");
@@ -21,7 +23,7 @@ Map::Map()
 	bg_4->scale.y = app.GetHeight();
 
 	//bg->imageSize.x *= 2.0f;
-//bg->imageSize.y *= 2.0f;
+	//bg->imageSize.y *= 2.0f;
 	bg_1->imageSize.x *= 2.0f;
 	bg_1->imageSize.y *= 2.0f;
 	bg_2->imageSize.x *= 2.0f;
@@ -42,6 +44,17 @@ Map::Map()
 	bg_2->space = SPACE::SCREEN;
 	bg_3->space = SPACE::SCREEN;
 	bg_4->space = SPACE::SCREEN;
+
+	for (auto& objs : floor)
+	{
+		objs = new ObRect;
+		objs->isFilled = false;
+		objs->pivot = OFFSET_LB;
+		objs->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
+		Objects.emplace_back(objs);
+	}
+
+	Init();
 }
 
 Map::~Map()
@@ -56,6 +69,29 @@ Map::~Map()
 	TEXTURE->DeleteTexture(L"bg_ground_extend.png");
 	TEXTURE->DeleteTexture(L"bg_ground_weeds.png");
 	TEXTURE->DeleteTexture(L"bg_ground_trees.png");
+}
+
+void Map::Init()
+{
+	floor[0]->scale.x = 500.0f;
+	floor[0]->scale.y = 5.f;
+	floor[0]->SetWorldPos(Vector2(0.0f, -160)); // 0->500
+
+	floor[1]->scale.x = 400.0f;
+	floor[1]->scale.y = 5.f;
+	floor[1]->SetWorldPos(Vector2(600.0f, -160)); // 600->1000
+
+	floor[2]->scale.x = 300.0f;
+	floor[2]->scale.y = 5.f;
+	floor[2]->SetWorldPos(Vector2(1200.0f, -160)); // 1200->100
+
+	floor[3]->scale.x = 700.0f;
+	floor[3]->scale.y = 5.f;
+	floor[3]->SetWorldPos(Vector2(1800.0f, -160)); // 1800->2500
+
+	floor[4]->scale.x = 200.0f;
+	floor[4]->scale.y = 5.f;
+	floor[4]->SetWorldPos(Vector2(2700.0f, -160)); // 2700->3000
 }
 
 void Map::Update()
@@ -107,6 +143,9 @@ void Map::Update()
 	bg_2->Update();
 	bg_3->Update();
 	bg_4->Update();
+
+	for (auto& obj : this->Objects)
+		obj->Update();
 }
 
 void Map::Render(int type)
@@ -122,6 +161,28 @@ void Map::Render(int type)
 	{
 		bg_1->Render();
 	}
+
+	for (auto& obj : this->Objects)
+		obj->Render();
 }
 
+void Map::relocate(Vector2 playerPos)
+{
+	if (playerPos.x < 110)
+	{
+		this->Init();
+		return;
+	}
 
+	for (auto& obj : this->Objects)
+		if (playerPos.x - obj->GetWorldPos().x >= 2000)
+			obj->SetWorldPosX(obj->GetWorldPos().x + 3000);
+}
+
+//bool Map::collision(GameObject* target)
+//{
+//	for (auto& obj : this->Objects)
+//		if (obj->Intersect(target))
+//			return true;
+//	return false;
+//}

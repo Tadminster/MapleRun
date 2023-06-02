@@ -1,17 +1,49 @@
 ﻿#pragma once
-class Player : public ObRect
+enum class PlayerState
+{
+	IDLE,
+	RUN,
+	JUMP
+};
+
+enum class PlayerDir
+{
+	L,
+	R
+};
+
+class Player
 {
 private:
-	ObImage* player_skin[2];
+	ObRect*			collider;
+	ObImage*		skin_idle[2];
+	ObImage*		skin_run[2];
+	ObImage*		skin_jump[2];
 
-	int playerDir;
+	// state
+	PlayerState		state;
+	PlayerDir		dir;
+
+	// etc
+	float			gravity;
 
 public:
 	Player();
-	~Player() override;
+	~Player();
 
-	void Update() override;
-	void Render() override;
+	bool collision(class Map* map);
+
+	ObRect*			getCollider()	{ return this->collider; }
+	PlayerState		getSate()		{ return this->state;  }
+	float			getGravity()	{ return this->gravity;  }
+
+	void			setGravity(float value) { this->gravity += value; }
+
+	virtual void Init();
+	virtual void Update(Map* map);
+	virtual void Render();
 	virtual void Control();
+
+	virtual Vector2 getPos() { return this->collider->GetWorldPos(); }
 };
 
