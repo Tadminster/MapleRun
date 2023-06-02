@@ -35,6 +35,7 @@ public:
 
 	ObRect*			getCollider()	{ return this->collider; }
 	PlayerState		getSate()		{ return this->state;  }
+	PlayerDir		getDir()		{ return this->dir;  }
 	float			getGravity()	{ return this->gravity;  }
 
 	void			setGravity(float value) { this->gravity += value; }

@@ -9,7 +9,10 @@ private:
 	ObImage* bg_4;
 
 	ObRect* floor[5];
-	vector<ObRect*> Objects;
+	ObRect* floor_side[10];
+	ObRect* obstacle[5];
+	vector<ObRect*> floors;
+	vector<ObRect*> obstacles;
 
 public:
 	Map();
@@ -24,8 +27,11 @@ public:
 	void Render(int type);
 
 
-	//bool collision(GameObject* target);
-	vector<ObRect*>& getObjects() { return Objects; }
+	void collision(class Player* target);
+	vector<ObRect*>& getObjects() { return floors; }
 	void relocate(Vector2 playerPos);
+
+	void bg_left();
+	void bg_right();
 };
 

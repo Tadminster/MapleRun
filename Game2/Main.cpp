@@ -46,6 +46,7 @@ void Main::Update()
 	}
 	
 	map->Update();
+	map->collision(player);
 	map->relocate(player->getPos());
 	player->Update(map);
 	CAM->position.x = player->getPos().x;

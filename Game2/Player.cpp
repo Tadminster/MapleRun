@@ -83,21 +83,20 @@ bool Player::collision(Map* map)
 {
 	for (auto& obj : map->getObjects())
 	{
+		//obj->color = Color(1, 1, 1, 1);
 		if (this->collider->Intersect(obj))
 		{
-			obj->color = Color(1, 0, 0, 1);
+			//obj->color = Color(1, 0, 0, 1);
 			return true;
 		}
 
-		if (obj->color.x == 1)
-			obj->color = Color(1, 1, 1, 1);
 	}
 	return false;
 }
 
 void Player::Init()
 {
-	collider->SetWorldPos(Vector2(100, -155));
+	collider->SetWorldPos(Vector2(100, -150));
 	state = PlayerState::IDLE;
 	dir = PlayerDir::R;
 }
@@ -117,6 +116,7 @@ void Player::Update(Map* map)
 		{
 			this->collider->SetWorldPosY(-155);
 			this->state = PlayerState::IDLE;
+			gravity = 0;
 		}
 	}
 	else if (state == PlayerState::IDLE || state == PlayerState::RUN)
@@ -191,6 +191,7 @@ void Player::Control()
 		// can JUMP
 		if (INPUT->KeyDown(VK_UP))
 		{
+			this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
 			state = PlayerState::JUMP;
 			gravity = -250.0f;
 		}
