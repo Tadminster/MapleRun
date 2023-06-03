@@ -30,7 +30,7 @@ void Main::Release()
 
 void Main::Update()
 {
-	score_cur = player->getPos().x / 10;
+	score_cur = (player->getPos().x - 100) / 10;
 	if (score_max < score_cur) score_max = score_cur;
 
 	{	// DEBUG TEXT OUTPUT
@@ -47,12 +47,12 @@ void Main::Update()
 		else
 		{
 			ImGui::Text("KEYS");
-			ImGui::Text("[ SPACE  ] GAME START \n");
+			ImGui::Text(u8"[ SPACE  ] 게임 시작\n");
 			//ImGui::Text("[ VK_RIGHT ] RIGHT MOVE \n");
 			ImGui::Text("\n");
 
-			ImGui::Text("[ SCORE_NOW ] %d\n", score_cur);
-			ImGui::Text("[ SCORE_RANK ] %d\n", score_max);
+			ImGui::Text(u8"[ 현재 점수 ] %d\n", score_cur);
+			ImGui::Text(u8"[ 최고 점수 ] %d\n", score_max);
 		}
 	}
 	
