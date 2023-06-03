@@ -322,12 +322,12 @@ void Map::collision(Player* target)
 			obj->color = Color(1, 0, 0, 1);
 			if (target->getDir() == PlayerDir::L)
 			{
-				target->getCollider()->MoveWorldPos(RIGHT * 500 * DELTA);
+				target->getCollider()->MoveWorldPos(RIGHT * 400 * DELTA);
 				bg_right();
 			}
 			else
 			{
-				target->getCollider()->MoveWorldPos(LEFT * 500 * DELTA);
+				target->getCollider()->MoveWorldPos(LEFT * 400 * DELTA);
 				bg_left();
 			}
 		}

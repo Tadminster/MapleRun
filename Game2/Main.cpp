@@ -47,7 +47,8 @@ void Main::Update()
 		else
 		{
 			ImGui::Text("KEYS");
-			ImGui::Text(u8"[ SPACE  ] 게임 시작\n");
+			ImGui::Text(u8"[ SPACE ] 게임 시작\n");
+			ImGui::Text(u8"[  U  P  ] 점프\n");
 			//ImGui::Text("[ VK_RIGHT ] RIGHT MOVE \n");
 			ImGui::Text("\n");
 
