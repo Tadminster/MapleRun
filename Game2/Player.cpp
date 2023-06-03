@@ -108,6 +108,11 @@ void Player::Update(Map* map)
 
 	if (collider->GetWorldPos().y <= -500) this->Init();
 
+	if (state != PlayerState::IDLE)
+	{
+		map->bg_right();
+		this->collider->MoveWorldPos(RIGHT * 500 * DELTA);
+	}
 	if (state == PlayerState::JUMP)
 	{
 		this->gravity += 400.f * DELTA;
@@ -115,11 +120,11 @@ void Player::Update(Map* map)
 		if (this->collider->GetWorldPos().y < -155 && this->collision(map))
 		{
 			this->collider->SetWorldPosY(-155);
-			this->state = PlayerState::IDLE;
+			this->state = PlayerState::RUN;
 			gravity = 0;
 		}
 	}
-	else if (state == PlayerState::IDLE || state == PlayerState::RUN)
+	else if (state == PlayerState::RUN)
 	{
 		if (!this->collision(map))
 		{
@@ -128,31 +133,40 @@ void Player::Update(Map* map)
 		}
 		else if (this->collision(map) && collider->GetWorldPos().y > -155)
 			gravity = 0;
-	}
 
-
-	static float tickCount = 0.0f;
-	if (TIMER->GetTick(tickCount, 0.1f))
-	{
-		if (INPUT->KeyPress(VK_LEFT))
-		{
-			
-			for (auto& playerSkin : this->skin_run)
-			{
-				playerSkin->uv.z -= 1.0f / 4.0f;
-				playerSkin->uv.x -= 1.0f / 4.0f;
-			}
-		}
-		if (INPUT->KeyPress(VK_RIGHT))
-		{
+		static float tickCount = 0.0f;
+		if (TIMER->GetTick(tickCount, 0.1f))
 			for (auto& playerSkin : this->skin_run)
 			{
 				playerSkin->uv.z += 1.0f / 4.0f;
 				playerSkin->uv.x += 1.0f / 4.0f;
 			}
-		}
-
 	}
+
+
+
+	//static float tickCount = 0.0f;
+	//if (TIMER->GetTick(tickCount, 0.1f))
+	//{
+	//	if (INPUT->KeyPress(VK_LEFT))
+	//	{
+	//		
+	//		for (auto& playerSkin : this->skin_run)
+	//		{
+	//			playerSkin->uv.z -= 1.0f / 4.0f;
+	//			playerSkin->uv.x -= 1.0f / 4.0f;
+	//		}
+	//	}
+	//	if (INPUT->KeyPress(VK_RIGHT))
+	//	{
+	//		for (auto& playerSkin : this->skin_run)
+	//		{
+	//			playerSkin->uv.z += 1.0f / 4.0f;
+	//			playerSkin->uv.x += 1.0f / 4.0f;
+	//		}
+	//	}
+
+	//}
 
 	for (auto& idle : this->skin_idle)
 		idle->Update();
@@ -185,55 +199,74 @@ void Player::Render()
 }
 
 void Player::Control()
-{
-	// When IDEL, RUN
-	if (state == PlayerState::IDLE || state == PlayerState::RUN)
-		// can JUMP
-		if (INPUT->KeyDown(VK_UP))
+{	
+	if (DEBUG_MODE)
+	{ 
+		// When IDEL, RUN
+		if (state == PlayerState::IDLE || state == PlayerState::RUN)
+			// can JUMP
+			if (INPUT->KeyDown(VK_UP))
+			{
+				this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
+				state = PlayerState::JUMP;
+				gravity = -250.0f;
+			}
+		// When DEBUG, can DOWN
+		if (INPUT->KeyDown(VK_DOWN))
 		{
-			this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
-			state = PlayerState::JUMP;
-			gravity = -250.0f;
+			this->collider->MoveWorldPos(DOWN * 500.0f * DELTA);
 		}
-	// When DEBUG, can DOWN
-	if (INPUT->KeyDown(VK_DOWN))
-	{
-		this->collider->MoveWorldPos(DOWN * 500.0f * DELTA);
-	}
 
-	// When NOT JUMP, can change state
-	// Direction always changes
-	if (INPUT->KeyDown(VK_LEFT))
-	{
-		dir = PlayerDir::L;
+		// When NOT JUMP, can change state
+		// Direction always changes
+		if (INPUT->KeyDown(VK_LEFT))
+		{
+			dir = PlayerDir::L;
 
-		if (state != PlayerState::JUMP)
-			state = PlayerState::RUN;
-	}
-	if (INPUT->KeyDown(VK_RIGHT))
-	{
-		dir = PlayerDir::R;
-		
-		if (state != PlayerState::JUMP)
-			state = PlayerState::RUN;
-	}
+			if (state != PlayerState::JUMP)
+				state = PlayerState::RUN;
+		}
+		if (INPUT->KeyDown(VK_RIGHT))
+		{
+			dir = PlayerDir::R;
 
-	// KeyUP while Running, change state to IDLE
-	if (state == PlayerState::RUN && (INPUT->KeyUp(VK_LEFT) || INPUT->KeyUp(VK_RIGHT)))
-	{
+			if (state != PlayerState::JUMP)
+				state = PlayerState::RUN;
+		}
+
+		// KeyUP while Running, change state to IDLE
+		if (state == PlayerState::RUN && (INPUT->KeyUp(VK_LEFT) || INPUT->KeyUp(VK_RIGHT)))
+		{
 			state = PlayerState::IDLE;
-	}
+		}
 
-	// can always Move
-	if (INPUT->KeyPress(VK_LEFT))
+		// can always Move
+		if (INPUT->KeyPress(VK_LEFT))
+		{
+			this->collider->MoveWorldPos(LEFT * 500.0f * DELTA);
+		}
+		if (INPUT->KeyPress(VK_RIGHT))
+		{
+			this->collider->MoveWorldPos(RIGHT * 500.0f * DELTA);
+		}
+	}
+	else
 	{
-		this->collider->MoveWorldPos(LEFT * 500.0f * DELTA);
-	}
-	if (INPUT->KeyPress(VK_RIGHT))
-	{
-		this->collider->MoveWorldPos(RIGHT * 500.0f * DELTA);
-	}
+		if (state == PlayerState::IDLE)
+			if (INPUT->KeyDown(VK_SPACE))
+			{
+				state = PlayerState::RUN;
+			}
 
-
+		// When IDEL, RUN
+		if (state == PlayerState::RUN)
+		// can JUMP
+			if (INPUT->KeyDown(VK_UP))
+			{
+				this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
+				state = PlayerState::JUMP;
+				gravity = -250.0f;
+			}
+	}
 
 }

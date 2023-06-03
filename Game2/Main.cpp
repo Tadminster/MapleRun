@@ -8,6 +8,10 @@ Main::Main()
 {
 	map = new Map();
 	player = new Player();
+
+	gameStart = false;
+	score_cur = 0;
+	score_max = 0;
 }
 
 Main::~Main()
@@ -26,8 +30,11 @@ void Main::Release()
 
 void Main::Update()
 {
+	score_cur = player->getPos().x / 10;
+	if (score_max < score_cur) score_max = score_cur;
+
 	{	// DEBUG TEXT OUTPUT
-		if (debug)
+		if (DEBUG_MODE)
 		{
 			ImGui::Text("[ MOUSE_X ] %f\n", INPUT->GetWorldMousePos().x);
 			ImGui::Text("[ MOUSE_Y ] %f\n", INPUT->GetWorldMousePos().y);
@@ -40,8 +47,12 @@ void Main::Update()
 		else
 		{
 			ImGui::Text("KEYS");
-			ImGui::Text("[ VK_LEFT  ] LEFT  MOVE \n");
-			ImGui::Text("[ VK_RIGHT ] RIGHT MOVE \n");
+			ImGui::Text("[ SPACE  ] GAME START \n");
+			//ImGui::Text("[ VK_RIGHT ] RIGHT MOVE \n");
+			ImGui::Text("\n");
+
+			ImGui::Text("[ SCORE_NOW ] %d\n", score_cur);
+			ImGui::Text("[ SCORE_RANK ] %d\n", score_max);
 		}
 	}
 	

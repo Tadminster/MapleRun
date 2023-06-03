@@ -7,10 +7,13 @@ private:
 	ObImage* bg_2;
 	ObImage* bg_3;
 	ObImage* bg_4;*/
+	bool gameStart;
+	int score_cur;
+	int score_max;
+
+	
 	class Map*		map;
 	class Player*	player;
-
-	bool			debug = true;
 
 public:
 	Main();

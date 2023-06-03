@@ -176,9 +176,8 @@ void Map::Init()
 void Map::Update()
 {
 
-	if (INPUT->KeyPress(VK_LEFT))
-	{
-		bg_left();
+	//if (INPUT->KeyPress(VK_LEFT))
+	//{
 		//초당 한장 지나가는속도 -> 초당 1픽셀 속도 * 300
 
 		//bg->uv.x -= DELTA * 10.0f / bg->imageSize.x;
@@ -196,11 +195,10 @@ void Map::Update()
 		//bg_4->uv.x -= DELTA * 100.0f / bg_4->imageSize.x;
 		//bg_4->uv.z -= DELTA * 100.0f / bg_4->imageSize.x;
 
-	}
+	//}
 
-	if (INPUT->KeyPress(VK_RIGHT))
-	{
-		bg_right();
+	//if (INPUT->KeyPress(VK_RIGHT))
+	//{
 		//초당 한장 지나가는속도 -> 초당 1픽셀 속도 * 300
 
 		//bg->uv.x += DELTA * 10.0f / bg->imageSize.x;
@@ -217,7 +215,7 @@ void Map::Update()
 
 		//bg_4->uv.x += DELTA * 100.0f / bg_4->imageSize.x;
 		//bg_4->uv.z += DELTA * 100.0f / bg_4->imageSize.x;
-	}
+	//}
 
 	bg->Update();
 	bg_1->Update();
