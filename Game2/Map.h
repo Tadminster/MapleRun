@@ -2,11 +2,6 @@
 class Map
 {
 private:
-	/*ObImage* bg_0;
-	ObImage* bg_1;
-	ObImage* bg_2;
-	ObImage* bg_3;
-	ObImage* bg_5;*/
 	class Background* bg;
 
 	ObRect* floor[5];
@@ -32,8 +27,10 @@ public:
 	vector<ObRect*>& getObjects() { return floors; }
 	void relocate(Vector2 playerPos);
 
+	/*
+	* PARAM type == 0, LEFT PLAY
+	* PARAM type == 1, RIGHT PLAY
+	*/
 	void play_bg(int type);
-	//void bg_left();
-	//void bg_right();
 };
 
