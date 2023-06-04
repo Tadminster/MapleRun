@@ -174,7 +174,7 @@ void Player::Update(Map* map)
 
 void Player::Render()
 {
-	this->collider->Render();
+	//this->collider->Render();
 
 	if (state == PlayerState::IDLE && dir == PlayerDir::L)
 		skin_idle[0]->Render();
