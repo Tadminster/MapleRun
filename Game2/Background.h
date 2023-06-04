@@ -8,12 +8,16 @@ private:
 	ObImage* bg_3;
 	ObImage* bg_5;
 
+	ObRect* shark_collider;
+	ObImage* bg_4_shark;
+
 public:
 	Background();
 	~Background();
 
 	void Init();
 	void Update();
+	void LateUpdate();
 	void Render(int type);
 
 	void bg_left();

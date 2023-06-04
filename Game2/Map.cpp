@@ -2,13 +2,18 @@
 #include "Player.h"
 #include "Background.h"
 #include "Floor.h"
+#include "Obstacle.h"
 #include "Map.h"
 
 Map::Map()
 {
+	// 배경화면
 	bg = new Background();
-	statPoint = new Floor(5);
 
+
+
+	// 바닥
+	statPoint = new Floor(5); 	// 시작지점
 	block = new Floor*[maxBlock];
 	for (int i = 0; i < maxBlock; i++)
 	{
@@ -17,12 +22,20 @@ Map::Map()
 		blockCnt[i] = rand + 2;
 	}
 
+	// 장애물
+	obstacle = new Obstacle* [maxBlock];
+	for (int i = 0; i < maxBlock; i++)
+	{
+		obstacle[i] = new Obstacle();
+	}
+
+	// 벡터에 푸쉬
 	statPoint->PushVector(this->floors, this->obstacles);
 	for (int i = 0; i < maxBlock; i++)
+	{
 		block[i]->PushVector(this->floors, this->obstacles);
-
-	// 첫 블록 시작위치
-	/*accumulatedDistance = 800;*/
+		obstacle[i]->PushVector(this->obstacles);
+	}
 
 	Init();
 }
@@ -30,6 +43,12 @@ Map::Map()
 Map::~Map()
 {
 	bg->~Background();
+	for (int i = 0; i < maxBlock; i++)
+	{
+		block[i]->~Floor();
+		obstacle[i]->~Obstacle();
+	}
+
 }
 
 void Map::Init()
@@ -41,9 +60,9 @@ void Map::Init()
 	for (int i = 0; i < maxBlock; i++)
 	{
 		block[i]->Init(accumulatedDistance);
-		accumulatedDistance += (blockCnt[i] * 100 + RANDOM->Int(100, 400));
+		obstacle[i]->Init(accumulatedDistance + RANDOM->Int(20, 60) * blockCnt[i]);
+		accumulatedDistance += (blockCnt[i] * 100 + RANDOM->Int(50, 250));
 	}
-
 }
 
 void Map::Update()
@@ -56,21 +75,34 @@ void Map::Update()
 	for (auto& obj : this->obstacles)
 		obj->Update();
 	for (int i = 0; i < maxBlock; i++)
+	{
 		block[i]->Update();
+		obstacle[i]->Update();
+	}
 
-	ImGui::Text("[accumulatedDistance] %d\n", accumulatedDistance);
+	//ImGui::Text("[accumulatedDistance] %d\n", accumulatedDistance);
+}
+
+void Map::LateUpdate()
+{
+	bg->LateUpdate();
 }
 
 void Map::Render(int type)
 {
 	if (type == 0)
 		bg->Render(0);
-	else if (type == 1)
-		bg->Render(1);
 
+	if (type == 1)
 	statPoint->Render();
 	for (int i = 0; i < maxBlock; i++)
+	{
 		block[i]->Render();
+		obstacle[i]->Render();
+	}
+
+	if (type == 2)
+		bg->Render(1);
 }
 
 void Map::relocate(Vector2 playerPos)
@@ -85,10 +117,10 @@ void Map::relocate(Vector2 playerPos)
 	for (auto& obj : this->floors)
 		if (playerPos.x - obj->GetWorldPos().x >= accumulatedDistance - 1000)
 			obj->SetWorldPosX(obj->GetWorldPos().x + accumulatedDistance);
-	/*
+	
 	for (auto& obj : this->obstacles)
-		if (playerPos.x - obj->GetWorldPos().x >= 2000)
-			obj->SetWorldPosX(obj->GetWorldPos().x + 3000);*/
+		if (playerPos.x - obj->GetWorldPos().x >= accumulatedDistance - 1000)
+			obj->SetWorldPosX(obj->GetWorldPos().x + accumulatedDistance);
 }
 
 void Map::play_bg(int type)

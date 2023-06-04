@@ -30,7 +30,7 @@ void Main::Release()
 
 void Main::Update()
 {
-	score_cur = (player->getPos().x - 100) / 10;
+	score_cur = (player->getPos().x - 50) / 10;
 	if (score_max < score_cur) score_max = score_cur;
 
 	{	// DEBUG TEXT OUTPUT
@@ -61,12 +61,12 @@ void Main::Update()
 	map->collision(player);
 	map->relocate(player->getPos());
 	player->Update(map);
-	CAM->position.x = player->getPos().x;
-
+	CAM->position.x = player->getPos().x + 200;
 }
 
 void Main::LateUpdate()
 {
+	map->LateUpdate();
 }
 
 void Main::Render()
@@ -74,6 +74,7 @@ void Main::Render()
 	map->Render(0);
 	player->Render();
 	map->Render(1);
+	map->Render(2);
 }
 
 void Main::ResizeScreen()

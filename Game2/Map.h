@@ -7,6 +7,7 @@ private:
 	class Background* bg;
 	class Floor* statPoint;
 	class Floor** block;
+	class Obstacle** obstacle;
 	int blockCnt[maxBlock];
 	int accumulatedDistance;
 
@@ -19,6 +20,7 @@ public:
 	
 	void Init();
 	void Update();
+	void LateUpdate();
 	/*
 	* PARAM type == 0, BACK RENDER
 	* PARAM type == 1, FRONT RENDER

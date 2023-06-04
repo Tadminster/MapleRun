@@ -8,20 +8,29 @@ Background::Background()
 	bg_2 = new ObImage(L"bg_Background_2.png");
 	bg_3 = new ObImage(L"bg_Background_3.png");
 	bg_5 = new ObImage(L"bg_Background_5.png");
+
+	shark_collider = new ObRect();
+	bg_4_shark = new ObImage(L"shark.png");
+	bg_4_shark->SetParentRT(*shark_collider);
 }
 
 Background::~Background()
 {
+
 	delete bg_0;
 	delete bg_1;
 	delete bg_2;
 	delete bg_3;
+	delete bg_4_shark;
 	delete bg_5;
 	TEXTURE->DeleteTexture(L"bg_Background_0.png");
 	TEXTURE->DeleteTexture(L"bg_Background_1.png");
 	TEXTURE->DeleteTexture(L"bg_Background_2.png");
 	TEXTURE->DeleteTexture(L"bg_Background_3.png");
+	TEXTURE->DeleteTexture(L"shark.png");
 	TEXTURE->DeleteTexture(L"bg_Background_5.png");
+
+	delete shark_collider;
 }
 
 void Background::Init()
@@ -47,7 +56,19 @@ void Background::Init()
 
 	bg_2->color = Color(0.60, 0.60, 0.60, 0.4f);
 	bg_3->color = Color(0.65, 0.65, 0.65, 0.4f);
-	bg_5->color = Color(0.60, 0.60, 0.60, 0.4f);
+	bg_5->color = Color(0.60, 0.60, 0.60, 0.35f);
+
+	shark_collider->scale.x = 1.0f;
+	shark_collider->scale.y = 1.0f;
+	bg_4_shark->SetWorldPosX(-1000);
+	bg_4_shark->SetWorldPosY(-265);
+
+	//bg_4_shark->SetParentRT(*this->collider);
+	bg_4_shark->color = Color(0.6, 0.6, 0.6, 0.5);
+	bg_4_shark->scale.x = bg_4_shark->imageSize.x / 5.0f;
+	bg_4_shark->scale.y = bg_4_shark->imageSize.y ;
+	bg_4_shark->uv.x = 1.0f / 5.0f;
+	bg_4_shark->uv.z = 2.0f / 5.0f;
 }
 
 void Background::Update()
@@ -57,6 +78,23 @@ void Background::Update()
 	bg_2->Update();
 	bg_3->Update();
 	bg_5->Update();
+
+	static float tickCount = 0.0f;
+	if (TIMER->GetTick(tickCount, 0.1f))
+	{
+		bg_4_shark->uv.z += 1.0f / 5.0f;
+		bg_4_shark->uv.x += 1.0f / 5.0f;
+	}
+	shark_collider->MoveWorldPos(RIGHT * 550 * DELTA);
+	shark_collider->Update();
+	bg_4_shark->Update();
+}
+
+void Background::LateUpdate()
+{
+	// 상어 일정거리 멀어지면 위치 이동
+	if (shark_collider->GetWorldPos().x > CAM->position.x + 2500)
+		shark_collider->SetWorldPosX(CAM->position.x - 1000);
 }
 
 void Background::Render(int type)
@@ -70,8 +108,10 @@ void Background::Render(int type)
 	}
 	else if (type == 1)
 	{
+		bg_4_shark->Render();
 		bg_5->Render();
 	}
+
 }
 
 void Background::bg_left()

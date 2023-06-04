@@ -91,7 +91,7 @@ bool Player::collision(Map* map)
 
 void Player::Init()
 {
-	collider->SetWorldPos(Vector2(100, -150));
+	collider->SetWorldPos(Vector2(50, -130));
 	state = PlayerState::IDLE;
 	dir = PlayerDir::R;
 	this->gravity = 0;
@@ -107,11 +107,11 @@ void Player::Update(Map* map)
 	if (state != PlayerState::IDLE)
 	{
 		map->play_bg(1);
-		this->collider->MoveWorldPos(RIGHT * 400 * DELTA);
+		this->collider->MoveWorldPos(RIGHT * 300 * DELTA);
 	}
 	if (state == PlayerState::JUMP)
 	{
-		this->gravity += 550.f * DELTA;
+		this->gravity += 600.f * DELTA;
 		this->collider->MoveWorldPos(DOWN * gravity * DELTA);
 		if (this->collider->GetWorldPos().y < -160 && this->collision(map))
 		{
@@ -209,6 +209,6 @@ void Player::Control()
 		{
 			this->collider->MoveWorldPos(UP);
 			state = PlayerState::JUMP;
-			gravity = -250.0f;
+			gravity = -300.0f;
 		}
 }
