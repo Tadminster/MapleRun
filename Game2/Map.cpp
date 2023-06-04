@@ -22,16 +22,16 @@ Map::Map()
 	bg_5->scale.x = app.GetWidth();
 	bg_5->scale.y = app.GetHeight();
 
-	//bg_0->imageSize.x *= 2.0f;
-	//bg_0->imageSize.y *= 2.0f;
-	//bg_1->imageSize.x *= 2.0f;
-	//bg_1->imageSize.y *= 2.0f;
-	//bg_2->imageSize.x *= 2.0f;
-	//bg_2->imageSize.y *= 2.0f;
-	bg_3->imageSize.x *= 2.0f;
-	bg_3->imageSize.y *= 2.0f;
-	bg_5->imageSize.x *= 2.0f;
-	bg_5->imageSize.y *= 2.0f;
+	/*bg_0->imageSize.x *= 99.0f;
+	bg_0->imageSize.y *= 99.0f;
+	bg_1->imageSize.x *= 99.0f;
+	bg_1->imageSize.y *= 99.0f;
+	bg_2->imageSize.x *= 99.0f;
+	bg_2->imageSize.y *= 99.0f;
+	bg_3->imageSize.x *= 99.0f;
+	bg_3->imageSize.y *= 99.0f;
+	bg_5->imageSize.x *= 99.0f;
+	bg_5->imageSize.y *= 99.0f;*/
 
 	//bg_0->uv.z = app.GetWidth() / bg_0->imageSize.x;
 	//bg_1->uv.z = app.GetWidth() / bg_1->imageSize.x;
@@ -278,11 +278,11 @@ void Map::bg_left()
 	bg_1->uv.x -= DELTA * 20.0f / bg_1->imageSize.x;
 	bg_1->uv.z -= DELTA * 20.0f / bg_1->imageSize.x;
 			   
-	bg_2->uv.x -= DELTA * 25.0f / bg_2->imageSize.x;
-	bg_2->uv.z -= DELTA * 25.0f / bg_2->imageSize.x;
+	bg_2->uv.x -= DELTA * 30.0f / bg_2->imageSize.x;
+	bg_2->uv.z -= DELTA * 30.0f / bg_2->imageSize.x;
 			   
-	bg_3->uv.x -= DELTA * 70.0f / bg_3->imageSize.x;
-	bg_3->uv.z -= DELTA * 70.0f / bg_3->imageSize.x;
+	bg_3->uv.x -= DELTA * 50.0f / bg_3->imageSize.x;
+	bg_3->uv.z -= DELTA * 50.0f / bg_3->imageSize.x;
 			   
 	bg_5->uv.x -= DELTA * 100.0f / bg_5->imageSize.x;
 	bg_5->uv.z -= DELTA * 100.0f / bg_5->imageSize.x;
@@ -296,11 +296,11 @@ void Map::bg_right()
 	bg_1->uv.x += DELTA * 20.0f / bg_1->imageSize.x;
 	bg_1->uv.z += DELTA * 20.0f / bg_1->imageSize.x;
 			   
-	bg_2->uv.x += DELTA * 25.0f / bg_2->imageSize.x;
-	bg_2->uv.z += DELTA * 25.0f / bg_2->imageSize.x;
+	bg_2->uv.x += DELTA * 30.0f / bg_2->imageSize.x;
+	bg_2->uv.z += DELTA * 30.0f / bg_2->imageSize.x;
 			   
-	bg_3->uv.x += DELTA * 70.0f / bg_3->imageSize.x;
-	bg_3->uv.z += DELTA * 70.0f / bg_3->imageSize.x;
+	bg_3->uv.x += DELTA * 50.0f / bg_3->imageSize.x;
+	bg_3->uv.z += DELTA * 50.0f / bg_3->imageSize.x;
 			   
 	bg_5->uv.x += DELTA * 100.0f / bg_5->imageSize.x;
 	bg_5->uv.z += DELTA * 100.0f / bg_5->imageSize.x;
