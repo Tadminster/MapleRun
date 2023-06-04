@@ -8,7 +8,24 @@ Background::Background()
 	bg_2 = new ObImage(L"bg_Background_2.png");
 	bg_3 = new ObImage(L"bg_Background_3.png");
 	bg_5 = new ObImage(L"bg_Background_5.png");
+}
 
+Background::~Background()
+{
+	delete bg_0;
+	delete bg_1;
+	delete bg_2;
+	delete bg_3;
+	delete bg_5;
+	TEXTURE->DeleteTexture(L"bg_Background_0.png");
+	TEXTURE->DeleteTexture(L"bg_Background_1.png");
+	TEXTURE->DeleteTexture(L"bg_Background_2.png");
+	TEXTURE->DeleteTexture(L"bg_Background_3.png");
+	TEXTURE->DeleteTexture(L"bg_Background_5.png");
+}
+
+void Background::Init()
+{
 	bg_0->scale.x = app.GetWidth();
 	bg_0->scale.y = app.GetHeight();
 	bg_1->scale.x = app.GetWidth();
@@ -31,25 +48,6 @@ Background::Background()
 	bg_2->color = Color(0.60, 0.60, 0.60, 0.4f);
 	bg_3->color = Color(0.65, 0.65, 0.65, 0.4f);
 	bg_5->color = Color(0.60, 0.60, 0.60, 0.4f);
-}
-
-Background::~Background()
-{
-	delete bg_0;
-	delete bg_1;
-	delete bg_2;
-	delete bg_3;
-	delete bg_5;
-	TEXTURE->DeleteTexture(L"bg_Background_0.png");
-	TEXTURE->DeleteTexture(L"bg_Background_1.png");
-	TEXTURE->DeleteTexture(L"bg_Background_2.png");
-	TEXTURE->DeleteTexture(L"bg_Background_3.png");
-	TEXTURE->DeleteTexture(L"bg_Background_5.png");
-}
-
-void Background::Init()
-{
-
 }
 
 void Background::Update()

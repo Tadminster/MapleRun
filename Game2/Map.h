@@ -3,10 +3,11 @@ class Map
 {
 private:
 	class Background* bg;
+	class Floor* floor_test;
 
-	ObRect* floor[5];
-	ObRect* floor_side[10];
-	ObRect* obstacle[5];
+	//ObRect* floor[5];
+	//ObRect* floor_side[10];
+	//ObRect* obstacle[5];
 	vector<ObRect*> floors;
 	vector<ObRect*> obstacles;
 
