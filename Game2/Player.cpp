@@ -110,7 +110,7 @@ void Player::Update(Map* map)
 
 	if (state != PlayerState::IDLE)
 	{
-		map->bg_right();
+		map->play_bg(1);
 		this->collider->MoveWorldPos(RIGHT * 400 * DELTA);
 	}
 	if (state == PlayerState::JUMP)
