@@ -76,7 +76,7 @@ void Floor::Init(float pos_x)
 
 	side_LR[0]->scale.x = 5.0f;
 	side_LR[0]->scale.y = 160.f;
-	side_LR[0]->SetLocalPosY(-6);
+	side_LR[0]->SetLocalPosY(-4);
 	//side_LR[0]->SetWorldPos(Vector2(pos_x, -160));
 
 	side_image[0]->scale.x = side_TOP[0]->scale.x;

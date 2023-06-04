@@ -7,35 +7,22 @@
 Map::Map()
 {
 	bg = new Background();
-	floor_test = new Floor(5);
+	statPoint = new Floor(5);
 
-	floor_test->PushVector(this->floors, this->obstacles);
-	//for (auto& objs : floor)
-	//{
-	//	objs = new ObRect;
-	//	//objs->isFilled = false;
-	//	objs->pivot = OFFSET_LB;
-	//	objs->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-	//	floors.emplace_back(objs);
-	//}
+	block = new Floor*[maxBlock];
+	for (int i = 0; i < maxBlock; i++)
+	{
+		int rand = RANDOM->Int(0, 8);
+		block[i] = new Floor(rand);
+		blockCnt[i] = rand + 2;
+	}
 
-	//for (auto& objs : floor_side)
-	//{
-	//	objs = new ObRect;
-	//	//objs->isFilled = false;
-	//	objs->pivot = OFFSET_T;
-	//	objs->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-	//	obstacles.emplace_back(objs);
-	//}
+	statPoint->PushVector(this->floors, this->obstacles);
+	for (int i = 0; i < maxBlock; i++)
+		block[i]->PushVector(this->floors, this->obstacles);
 
-	//for (auto& objs : obstacle)
-	//{
-	//	objs = new ObRect;
-	//	//objs->isFilled = false;
-	//	objs->pivot = OFFSET_LB;
-	//	objs->color = Color(1.0f, 1.0f, 1.0f, 1.0f);
-	//	obstacles.emplace_back(objs);
-	//}
+	// 첫 블록 시작위치
+	/*accumulatedDistance = 800;*/
 
 	Init();
 }
@@ -47,19 +34,31 @@ Map::~Map()
 
 void Map::Init()
 {
+	accumulatedDistance = 900;
 	bg->Init();
-	floor_test->Init(0);
+	statPoint->Init(0);
+
+	for (int i = 0; i < maxBlock; i++)
+	{
+		block[i]->Init(accumulatedDistance);
+		accumulatedDistance += (blockCnt[i] * 100 + RANDOM->Int(100, 400));
+	}
+
 }
 
 void Map::Update()
 {
 	bg->Update();
-	floor_test->Update();
+	statPoint->Update();
 
 	for (auto& obj : this->floors)
 		obj->Update();
 	for (auto& obj : this->obstacles)
 		obj->Update();
+	for (int i = 0; i < maxBlock; i++)
+		block[i]->Update();
+
+	ImGui::Text("[accumulatedDistance] %d\n", accumulatedDistance);
 }
 
 void Map::Render(int type)
@@ -69,23 +68,27 @@ void Map::Render(int type)
 	else if (type == 1)
 		bg->Render(1);
 
-	floor_test->Render();
+	statPoint->Render();
+	for (int i = 0; i < maxBlock; i++)
+		block[i]->Render();
 }
 
 void Map::relocate(Vector2 playerPos)
 {
 	if (playerPos.x < 110)
 	{
+		//accumulatedDistance = 800;
 		this->Init();
 		return;
 	}
 
 	for (auto& obj : this->floors)
-		if (playerPos.x - obj->GetWorldPos().x >= 2000)
-			obj->SetWorldPosX(obj->GetWorldPos().x + 3000);
+		if (playerPos.x - obj->GetWorldPos().x >= accumulatedDistance - 1000)
+			obj->SetWorldPosX(obj->GetWorldPos().x + accumulatedDistance);
+	/*
 	for (auto& obj : this->obstacles)
 		if (playerPos.x - obj->GetWorldPos().x >= 2000)
-			obj->SetWorldPosX(obj->GetWorldPos().x + 3000);
+			obj->SetWorldPosX(obj->GetWorldPos().x + 3000);*/
 }
 
 void Map::play_bg(int type)
@@ -117,12 +120,12 @@ void Map::collision(Player* target)
 			obj->color = Color(1, 0, 0, 1);
 			if (target->getDir() == PlayerDir::L)
 			{
-				target->getCollider()->MoveWorldPos(RIGHT * 400 * DELTA);
+				target->getCollider()->MoveWorldPos(RIGHT * 1200 * DELTA);
 				bg->bg_right();
 			}
 			else
 			{
-				target->getCollider()->MoveWorldPos(LEFT * 400 * DELTA);
+				target->getCollider()->MoveWorldPos(LEFT * 1200 * DELTA);
 				bg->bg_left();
 			}
 		}

@@ -111,11 +111,11 @@ void Player::Update(Map* map)
 	}
 	if (state == PlayerState::JUMP)
 	{
-		this->gravity += 400.f * DELTA;
+		this->gravity += 550.f * DELTA;
 		this->collider->MoveWorldPos(DOWN * gravity * DELTA);
-		if (this->collider->GetWorldPos().y < -155 && this->collision(map))
+		if (this->collider->GetWorldPos().y < -160 && this->collision(map))
 		{
-			this->collider->SetWorldPosY(-155);
+			//this->collider->SetWorldPosY(-160);
 			this->state = PlayerState::RUN;
 			gravity = 0;
 		}
@@ -196,73 +196,19 @@ void Player::Render()
 
 void Player::Control()
 {	
-	if (false)
-	{ 
-		// When IDEL, RUN
-		if (state == PlayerState::IDLE || state == PlayerState::RUN)
-			// can JUMP
-			if (INPUT->KeyDown(VK_UP))
-			{
-				this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
-				state = PlayerState::JUMP;
-				gravity = -250.0f;
-			}
-		// When DEBUG, can DOWN
-		if (INPUT->KeyDown(VK_DOWN))
+	if (state == PlayerState::IDLE)
+		if (INPUT->KeyDown(VK_SPACE))
 		{
-			this->collider->MoveWorldPos(DOWN * 500.0f * DELTA);
+			state = PlayerState::RUN;
 		}
 
-		// When NOT JUMP, can change state
-		// Direction always changes
-		if (INPUT->KeyDown(VK_LEFT))
+	// When IDEL, RUN
+	if (state == PlayerState::RUN)
+	// can JUMP
+		if (INPUT->KeyDown(VK_UP))
 		{
-			dir = PlayerDir::L;
-
-			if (state != PlayerState::JUMP)
-				state = PlayerState::RUN;
+			this->collider->MoveWorldPos(UP);
+			state = PlayerState::JUMP;
+			gravity = -250.0f;
 		}
-		if (INPUT->KeyDown(VK_RIGHT))
-		{
-			dir = PlayerDir::R;
-
-			if (state != PlayerState::JUMP)
-				state = PlayerState::RUN;
-		}
-
-		// KeyUP while Running, change state to IDLE
-		if (state == PlayerState::RUN && (INPUT->KeyUp(VK_LEFT) || INPUT->KeyUp(VK_RIGHT)))
-		{
-			state = PlayerState::IDLE;
-		}
-
-		// can always Move
-		if (INPUT->KeyPress(VK_LEFT))
-		{
-			this->collider->MoveWorldPos(LEFT * 500.0f * DELTA);
-		}
-		if (INPUT->KeyPress(VK_RIGHT))
-		{
-			this->collider->MoveWorldPos(RIGHT * 500.0f * DELTA);
-		}
-	}
-	
-	{
-		if (state == PlayerState::IDLE)
-			if (INPUT->KeyDown(VK_SPACE))
-			{
-				state = PlayerState::RUN;
-			}
-
-		// When IDEL, RUN
-		if (state == PlayerState::RUN)
-		// can JUMP
-			if (INPUT->KeyDown(VK_UP))
-			{
-				this->collider->SetWorldPosY(collider->GetWorldPos().y + 5);
-				state = PlayerState::JUMP;
-				gravity = -250.0f;
-			}
-	}
-
 }

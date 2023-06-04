@@ -1,13 +1,15 @@
 ﻿#pragma once
+#define maxBlock 10
+
 class Map
 {
 private:
 	class Background* bg;
-	class Floor* floor_test;
+	class Floor* statPoint;
+	class Floor** block;
+	int blockCnt[maxBlock];
+	int accumulatedDistance;
 
-	//ObRect* floor[5];
-	//ObRect* floor_side[10];
-	//ObRect* obstacle[5];
 	vector<ObRect*> floors;
 	vector<ObRect*> obstacles;
 
