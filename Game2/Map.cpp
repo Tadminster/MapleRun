@@ -4,45 +4,50 @@
 
 Map::Map()
 {
-	bg = new ObImage(L"bg_background.png");
-	bg_1 = new ObImage(L"bg_ground_flower.png");
-	bg_2 = new ObImage(L"bg_ground_extend.png");
-	bg_3 = new ObImage(L"bg_ground_weeds.png");
-	bg_4 = new ObImage(L"bg_ground_trees.png");
+	bg_0 = new ObImage(L"bg_Background_0.png");
+	bg_1 = new ObImage(L"bg_Background_1.png");
+	bg_2 = new ObImage(L"bg_Background_2.png");
+	bg_3 = new ObImage(L"bg_Background_3.png");
+	bg_5 = new ObImage(L"bg_Background_5.png");
 
-	bg->scale.x = app.GetWidth();
-	bg->scale.y = app.GetHeight();
+	bg_0->scale.x = app.GetWidth();
+	bg_0->scale.y = app.GetHeight();
 	bg_1->scale.x = app.GetWidth();
 	bg_1->scale.y = app.GetHeight();
 	bg_2->scale.x = app.GetWidth();
 	bg_2->scale.y = app.GetHeight();
+
 	bg_3->scale.x = app.GetWidth();
 	bg_3->scale.y = app.GetHeight();
-	bg_4->scale.x = app.GetWidth();
-	bg_4->scale.y = app.GetHeight();
+	bg_5->scale.x = app.GetWidth();
+	bg_5->scale.y = app.GetHeight();
 
-	//bg->imageSize.x *= 2.0f;
-	//bg->imageSize.y *= 2.0f;
-	bg_1->imageSize.x *= 2.0f;
-	bg_1->imageSize.y *= 2.0f;
-	bg_2->imageSize.x *= 2.0f;
-	bg_2->imageSize.y *= 2.0f;
+	//bg_0->imageSize.x *= 2.0f;
+	//bg_0->imageSize.y *= 2.0f;
+	//bg_1->imageSize.x *= 2.0f;
+	//bg_1->imageSize.y *= 2.0f;
+	//bg_2->imageSize.x *= 2.0f;
+	//bg_2->imageSize.y *= 2.0f;
 	bg_3->imageSize.x *= 2.0f;
 	bg_3->imageSize.y *= 2.0f;
-	bg_4->imageSize.x *= 2.0f;
-	bg_4->imageSize.y *= 2.0f;
+	bg_5->imageSize.x *= 2.0f;
+	bg_5->imageSize.y *= 2.0f;
 
-	bg->uv.z = app.GetWidth() / bg->imageSize.x;
-	bg_1->uv.z = app.GetWidth() / bg->imageSize.x;
-	bg_2->uv.z = app.GetWidth() / bg_2->imageSize.x;
-	bg_3->uv.z = app.GetWidth() / bg_3->imageSize.x;
-	bg_4->uv.z = app.GetWidth() / bg_4->imageSize.x;
+	//bg_0->uv.z = app.GetWidth() / bg_0->imageSize.x;
+	//bg_1->uv.z = app.GetWidth() / bg_1->imageSize.x;
+	//bg_2->uv.z = app.GetWidth() / bg_2->imageSize.x;
+	//bg_3->uv.z = app.GetWidth() / bg_3->imageSize.x;
+	bg_5->uv.z = app.GetWidth() / bg_5->imageSize.x;
 
-	bg->space = SPACE::SCREEN;
+	bg_0->space = SPACE::SCREEN;
 	bg_1->space = SPACE::SCREEN;
 	bg_2->space = SPACE::SCREEN;
 	bg_3->space = SPACE::SCREEN;
-	bg_4->space = SPACE::SCREEN;
+	bg_5->space = SPACE::SCREEN;
+
+	bg_2->color = Color(0.60, 0.60, 0.60, 0.4f);
+	bg_3->color = Color(0.65, 0.65, 0.65, 0.4f);
+	bg_5->color = Color(0.60, 0.60, 0.60, 0.4f);
 
 	for (auto& objs : floor)
 	{
@@ -76,16 +81,16 @@ Map::Map()
 
 Map::~Map()
 {
-	delete bg;
+	delete bg_0;
 	delete bg_1;
 	delete bg_2;
 	delete bg_3;
-	delete bg_4;
-	TEXTURE->DeleteTexture(L"bg_background.png");
-	TEXTURE->DeleteTexture(L"bg_ground_flower.png");
-	TEXTURE->DeleteTexture(L"bg_ground_extend.png");
-	TEXTURE->DeleteTexture(L"bg_ground_weeds.png");
-	TEXTURE->DeleteTexture(L"bg_ground_trees.png");
+	delete bg_5;
+	TEXTURE->DeleteTexture(L"bg_Background_0.png");
+	TEXTURE->DeleteTexture(L"bg_Background_1.png");
+	TEXTURE->DeleteTexture(L"bg_Background_2.png");
+	TEXTURE->DeleteTexture(L"bg_Background_3.png");
+	TEXTURE->DeleteTexture(L"bg_Background_5.png");
 }
 
 void Map::Init()
@@ -217,11 +222,11 @@ void Map::Update()
 		//bg_4->uv.z += DELTA * 100.0f / bg_4->imageSize.x;
 	//}
 
-	bg->Update();
-	bg_1->Update();
+	bg_0->Update();
+	bg_5->Update();
 	bg_2->Update();
 	bg_3->Update();
-	bg_4->Update();
+	bg_1->Update();
 
 	for (auto& obj : this->floors)
 		obj->Update();
@@ -233,14 +238,14 @@ void Map::Render(int type)
 {
 	if (type == 0)
 	{
-		bg->Render();
-		bg_4->Render();
-		bg_3->Render();
+		bg_0->Render();
+		bg_1->Render();
 		bg_2->Render();
+		bg_3->Render();
 	}
 	else if (type == 1)
 	{
-		bg_1->Render();
+		bg_5->Render();
 	}
 
 	for (auto& obj : this->floors)
@@ -267,38 +272,38 @@ void Map::relocate(Vector2 playerPos)
 
 void Map::bg_left()
 {
-	bg->uv.x -= DELTA * 10.0f / bg->imageSize.x;
-	bg->uv.z -= DELTA * 10.0f / bg->imageSize.x;
-
-	bg_1->uv.x -= DELTA * 130.0f / bg_1->imageSize.x;
-	bg_1->uv.z -= DELTA * 130.0f / bg_1->imageSize.x;
-
-	bg_2->uv.x -= DELTA * 175.0f / bg_2->imageSize.x;
-	bg_2->uv.z -= DELTA * 175.0f / bg_2->imageSize.x;
-
-	bg_3->uv.x -= DELTA * 100.0f / bg_3->imageSize.x;
-	bg_3->uv.z -= DELTA * 100.0f / bg_3->imageSize.x;
-
-	bg_4->uv.x -= DELTA * 50.0f / bg_4->imageSize.x;
-	bg_4->uv.z -= DELTA * 50.0f / bg_4->imageSize.x;
+	bg_0->uv.x -= DELTA * 10.0f / bg_0->imageSize.x;
+	bg_0->uv.z -= DELTA * 10.0f / bg_0->imageSize.x;
+			   
+	bg_1->uv.x -= DELTA * 20.0f / bg_1->imageSize.x;
+	bg_1->uv.z -= DELTA * 20.0f / bg_1->imageSize.x;
+			   
+	bg_2->uv.x -= DELTA * 25.0f / bg_2->imageSize.x;
+	bg_2->uv.z -= DELTA * 25.0f / bg_2->imageSize.x;
+			   
+	bg_3->uv.x -= DELTA * 70.0f / bg_3->imageSize.x;
+	bg_3->uv.z -= DELTA * 70.0f / bg_3->imageSize.x;
+			   
+	bg_5->uv.x -= DELTA * 100.0f / bg_5->imageSize.x;
+	bg_5->uv.z -= DELTA * 100.0f / bg_5->imageSize.x;
 }
 
 void Map::bg_right()
 {
-	bg->uv.x += DELTA * 10.0f / bg->imageSize.x;
-	bg->uv.z += DELTA * 10.0f / bg->imageSize.x;
-
-	bg_1->uv.x += DELTA * 130.0f / bg_1->imageSize.x;
-	bg_1->uv.z += DELTA * 130.0f / bg_1->imageSize.x;
-
-	bg_2->uv.x += DELTA * 175.0f / bg_2->imageSize.x;
-	bg_2->uv.z += DELTA * 170.0f / bg_2->imageSize.x;
-
-	bg_3->uv.x += DELTA * 100.0f / bg_3->imageSize.x;
-	bg_3->uv.z += DELTA * 100.0f / bg_3->imageSize.x;
-
-	bg_4->uv.x += DELTA * 50.0f / bg_4->imageSize.x;
-	bg_4->uv.z += DELTA * 50.0f / bg_4->imageSize.x;
+	bg_0->uv.x += DELTA * 10.0f / bg_0->imageSize.x;
+	bg_0->uv.z += DELTA * 10.0f / bg_0->imageSize.x;
+			   
+	bg_1->uv.x += DELTA * 20.0f / bg_1->imageSize.x;
+	bg_1->uv.z += DELTA * 20.0f / bg_1->imageSize.x;
+			   
+	bg_2->uv.x += DELTA * 25.0f / bg_2->imageSize.x;
+	bg_2->uv.z += DELTA * 25.0f / bg_2->imageSize.x;
+			   
+	bg_3->uv.x += DELTA * 70.0f / bg_3->imageSize.x;
+	bg_3->uv.z += DELTA * 70.0f / bg_3->imageSize.x;
+			   
+	bg_5->uv.x += DELTA * 100.0f / bg_5->imageSize.x;
+	bg_5->uv.z += DELTA * 100.0f / bg_5->imageSize.x;
 }
 
 void Map::collision(Player* target)
