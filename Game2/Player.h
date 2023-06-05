@@ -26,6 +26,7 @@ private:
 
 	// etc
 	float			gravity;
+	float			doubleJump;
 
 public:
 	Player();

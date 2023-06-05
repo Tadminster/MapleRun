@@ -33,8 +33,6 @@ Player::Player()
 			idle->scale.y = idle->imageSize.y;
 			idle->SetLocalPosY(34);
 		}
-		//skin_idle[0]->SetLocalPosX(-10);
-		//skin_idle[1]->SetLocalPosX(10);
 		
 		// JUMP
 		for (auto& jump : skin_jump)
@@ -95,6 +93,7 @@ void Player::Init()
 	state = PlayerState::IDLE;
 	dir = PlayerDir::R;
 	this->gravity = 0;
+	doubleJump = true;
 }
 
 void Player::Update(Map* map)
@@ -104,11 +103,13 @@ void Player::Update(Map* map)
 
 	if (collider->GetWorldPos().y <= -500) this->Init();
 
+	// when not IDLE (common)
 	if (state != PlayerState::IDLE)
 	{
 		map->play_bg(1);
 		this->collider->MoveWorldPos(RIGHT * 300 * DELTA);
 	}
+
 	if (state == PlayerState::JUMP)
 	{
 		this->gravity += 600.f * DELTA;
@@ -122,6 +123,7 @@ void Player::Update(Map* map)
 	}
 	else if (state == PlayerState::RUN)
 	{
+		doubleJump = true;
 		if (!this->collision(map))
 		{
 			this->gravity += 400.f * DELTA;
@@ -138,31 +140,6 @@ void Player::Update(Map* map)
 				playerSkin->uv.x += 1.0f / 4.0f;
 			}
 	}
-
-
-
-	//static float tickCount = 0.0f;
-	//if (TIMER->GetTick(tickCount, 0.1f))
-	//{
-	//	if (INPUT->KeyPress(VK_LEFT))
-	//	{
-	//		
-	//		for (auto& playerSkin : this->skin_run)
-	//		{
-	//			playerSkin->uv.z -= 1.0f / 4.0f;
-	//			playerSkin->uv.x -= 1.0f / 4.0f;
-	//		}
-	//	}
-	//	if (INPUT->KeyPress(VK_RIGHT))
-	//	{
-	//		for (auto& playerSkin : this->skin_run)
-	//		{
-	//			playerSkin->uv.z += 1.0f / 4.0f;
-	//			playerSkin->uv.x += 1.0f / 4.0f;
-	//		}
-	//	}
-
-	//}
 
 	for (auto& idle : this->skin_idle)
 		idle->Update();
@@ -197,7 +174,7 @@ void Player::Render()
 void Player::Control()
 {	
 	if (state == PlayerState::IDLE)
-		if (INPUT->KeyDown(VK_SPACE))
+		if (INPUT->KeyDown(VK_RIGHT))
 		{
 			state = PlayerState::RUN;
 		}
@@ -205,10 +182,21 @@ void Player::Control()
 	// When IDEL, RUN
 	if (state == PlayerState::RUN)
 	// can JUMP
-		if (INPUT->KeyDown(VK_UP))
+		if (INPUT->KeyDown(VK_SPACE))
 		{
 			this->collider->MoveWorldPos(UP);
 			state = PlayerState::JUMP;
 			gravity = -300.0f;
 		}
+	// DoubleJump
+	if (state == PlayerState::JUMP)
+	{
+		if (doubleJump && collider->GetWorldPos().y > -100)
+		if (INPUT->KeyDown(VK_SPACE))
+		{
+			doubleJump = false;
+			this->collider->MoveWorldPos(UP);
+			gravity = -250.0f;
+		}
+	}
 }
